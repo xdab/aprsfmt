@@ -1,30 +1,26 @@
 # aprsfmt
 Command-line utility for producing and parsing APRS packets
 
-## Building
-
-This project uses CMake for building.
-
-### Build Instructions
-
 ```bash
-# Create and enter build directory
-mkdir build
-cd build
+# Remove build directory
+make clean
 
-# Configure
-cmake ..
+# Pull latest changes including submodules
+make update
 
-# Build
-cmake --build .
-```
+# Compile with debugging symbols (default)
+make build
 
-### Installation
+# Compile a clean binary for installation
+make release
 
-```bash
-# Install to system (default prefix: /usr/local)
-sudo cmake --install .
+# Compile & run with sample arguments
+make 
+make run
 
-# Or install to a specific prefix
-cmake --install . --prefix /usr
+# Compile & run tests
+make test
+
+# Compile in Release mode and install to system
+make install
 ```
