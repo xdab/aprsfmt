@@ -16,6 +16,9 @@ error_t parse_opt(int key, char *arg, struct argp_state *state)
     case 'i':
         strncpy(arguments->info, arg, MAX_INFO_LEN);
         break;
+    case 'p':
+        strncpy(arguments->path, arg, MAX_PATH_LEN);
+        break;
     case ARGP_KEY_END:
         break;
     default:

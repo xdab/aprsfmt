@@ -5,17 +5,20 @@
 
 #define MAX_CALLSIGN_LEN 16
 #define MAX_INFO_LEN 256
+#define MAX_PATH_LEN 512
 
 struct arguments
 {
     char source[MAX_CALLSIGN_LEN + 1];
     char dest[MAX_CALLSIGN_LEN + 1];
     char info[MAX_INFO_LEN + 1];
+    char path[MAX_PATH_LEN + 1];
 };
 
 static struct argp_option options[] = {
     {"source", 's', "CALL", 0, "Source callsign/address in TNC2 format", 0},
     {"dest", 'd', "CALL", 0, "Destination callsign/address in TNC2 format", 0},
+    {"path", 'p', "ADDR,ADDR,...", 0, "Path addresses in TNC2 format", 0},
     {"info", 'i', "STR", 0, "Info string", 0},
     {0, 0, 0, 0, 0, 0}};
 

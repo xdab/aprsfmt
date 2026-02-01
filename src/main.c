@@ -34,9 +34,30 @@ int main(int argc, char *argv[])
     ret = tnc2_string_to_addr(&packet.destination, &dst_buf);
     nonnegative(ret, "tnc2_string_to_addr dst");
 
+    // Parse path addresses
+    if (args.path[0])
+    {
+        char *saveptr;
+        char *token = strtok_r(args.path, ",", &saveptr);
+        while (token != NULL && packet.path_len < AX25_MAX_PATH_LEN)
+        {
+            buffer_t path_buf = {
+                .data = (unsigned char *)token,
+                .size = strlen(token),
+                .capacity = strlen(token)};
+            ret = tnc2_string_to_addr(&packet.path[packet.path_len], &path_buf);
+            nonnegative(ret, "tnc2_string_to_addr path");
+            packet.path_len++;
+            token = strtok_r(NULL, ",", &saveptr);
+        }
+    }
+
     // Copy info
-    packet.info_len = strlen(args.info);
-    memcpy(packet.info, args.info, packet.info_len);
+    if (args.info[0])
+    {
+        packet.info_len = strlen(args.info);
+        memcpy(packet.info, args.info, packet.info_len);
+    }
 
     // Convert to TNC2
     char out_buf_data[512] = {0};

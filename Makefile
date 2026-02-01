@@ -13,7 +13,7 @@ release:
 	cd build && make -j
 
 run: build
-	./build/aprsfmt -s N0CALL-10 -d APRS -i "Hello World"
+	./build/aprsfmt -s N0CALL-10 -d APRS -p WIDE2-2 -i "Hello World"
 
 test: build
 	./build/aprsfmt_test
