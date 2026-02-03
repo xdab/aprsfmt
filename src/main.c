@@ -57,16 +57,36 @@ int main(int argc, char *argv[])
     char info_buf[MAX_INFO_LEN + 1] = {0};
     if (args.lat != 0.0 || args.lon != 0.0)
     {
-        position_uncompressed_t pos = {
-            .lat = args.lat,
-            .lon = args.lon,
-            .symbol_table = args.symbol_table ? args.symbol_table : '/',
-            .symbol = args.symbol ? args.symbol : '-',
-            .messaging_capable = args.messaging,
-            .with_timestamp = args.timestamped};
+        if (args.compressed)
+        {
+            position_compressed_t pos = {
+                .lat = args.lat,
+                .lon = args.lon,
+                .symbol_table = args.symbol_table ? args.symbol_table : '/',
+                .symbol = args.symbol ? args.symbol : '-',
+                .has_course_speed = false,
+                .has_radio_range = false,
+                .has_altitude = false,
+                .gps_fix = GPS_FIX_OLD,
+                .nmea_source = NMEA_OTHER,
+                .compression_origin = COMPRESS_COMPRESSED};
 
-        ret = position_format_uncompressed(info_buf, &pos);
-        nonnegative(ret, "position_format_uncompressed");
+            ret = position_format_compressed(info_buf, &pos);
+            nonnegative(ret, "position_format_compressed");
+        }
+        else
+        {
+            position_uncompressed_t pos = {
+                .lat = args.lat,
+                .lon = args.lon,
+                .symbol_table = args.symbol_table ? args.symbol_table : '/',
+                .symbol = args.symbol ? args.symbol : '-',
+                .messaging_capable = args.messaging,
+                .with_timestamp = args.timestamped};
+
+            ret = position_format_uncompressed(info_buf, &pos);
+            nonnegative(ret, "position_format_uncompressed");
+        }
 
         // Append original info if provided
         if (args.info[0])

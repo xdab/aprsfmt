@@ -38,6 +38,9 @@ error_t parse_opt(int key, char *arg, struct argp_state *state)
     case 1005: /* --symbol */
         arguments->symbol = arg[0];
         break;
+    case 1006: /* --compressed */
+        arguments->compressed = true;
+        break;
     case ARGP_KEY_END:
         break;
     default:

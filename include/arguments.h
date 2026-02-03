@@ -20,6 +20,7 @@ struct arguments
     bool timestamped;
     char symbol_table;
     char symbol;
+    bool compressed;
 };
 
 static struct argp_option options[] = {
@@ -33,6 +34,7 @@ static struct argp_option options[] = {
     {"timestamped", 1003, 0, 0, "Position report is timestamped", 0},
     {"symbol-table", 1004, "CHAR", 0, "APRS symbol table (default /)", 0},
     {"symbol", 1005, "CHAR", 0, "APRS symbol (default - for home)", 0},
+    {"compressed", 1006, 0, 0, "Use compressed position format", 0},
     {0, 0, 0, 0, 0, 0}};
 
 error_t parse_opt(int key, char *arg, struct argp_state *state);
