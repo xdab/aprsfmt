@@ -68,3 +68,5 @@ _deps/
 CMakeUserPresets.json
 CMakePresets.json
 compile_commands.json
+
+.vscode

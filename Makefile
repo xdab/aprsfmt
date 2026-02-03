@@ -13,7 +13,7 @@ release:
 	cd build && make -j
 
 run: build
-	./build/aprsfmt -s N0CALL-10 -d APRS -p WIDE2-2 -i "Hello World"
+	./build/aprsfmt -s N0CALL-10 -d APRS -p WIDE2-2 -i "Comment" --lat 52.2 --lon 20.9
 
 test: build
 	./build/aprsfmt_test

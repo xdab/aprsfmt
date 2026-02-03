@@ -34,7 +34,7 @@ add_compile_options(-Wall -Wextra)
 
 add_subdirectory(libs/libtnc)
 
-add_executable(aprsfmt src/main.c src/arguments.c)
+add_executable(aprsfmt src/main.c src/arguments.c src/position_uncompressed.c)
 target_link_libraries(aprsfmt PRIVATE tnc m)
 target_include_directories(aprsfmt PRIVATE libs/libtnc/include)
 
@@ -42,9 +42,10 @@ install(TARGETS aprsfmt
     RUNTIME DESTINATION bin
 )
 
-add_executable(aprsfmt_test test/main_test.c test/test.c)
+add_executable(aprsfmt_test test/main_test.c test/test.c src/position_uncompressed.c)
 
 target_link_libraries(aprsfmt_test m)
+target_include_directories(aprsfmt_test PRIVATE include)
 
 # Strip symbols in Release builds
 if(NOT APRSFMT_DEBUG AND NOT CMAKE_BUILD_TYPE STREQUAL "Debug")

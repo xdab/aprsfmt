@@ -5,6 +5,7 @@
 #include <tnc2.h>
 #include <common.h>
 #include <arguments.h>
+#include <position.h>
 
 int main(int argc, char *argv[])
 {
@@ -52,11 +53,36 @@ int main(int argc, char *argv[])
         }
     }
 
-    // Copy info
-    if (args.info[0])
+    // Build info string: if lat/lon provided, prepend position report
+    char info_buf[MAX_INFO_LEN + 1] = {0};
+    if (args.lat != 0.0 || args.lon != 0.0)
     {
-        packet.info_len = strlen(args.info);
-        memcpy(packet.info, args.info, packet.info_len);
+        position_uncompressed_t pos = {
+            .lat = args.lat,
+            .lon = args.lon,
+            .symbol_table = args.symbol_table ? args.symbol_table : '/',
+            .symbol = args.symbol ? args.symbol : '-',
+            .messaging_capable = args.messaging,
+            .with_timestamp = args.timestamped};
+
+        ret = position_format_uncompressed(info_buf, &pos);
+        nonnegative(ret, "position_format_uncompressed");
+
+        // Append original info if provided
+        if (args.info[0])
+            strncat(info_buf, args.info, MAX_INFO_LEN - strlen(info_buf) - 1);
+    }
+    else
+    {
+        // Use info as-is if no position data
+        strncpy(info_buf, args.info, MAX_INFO_LEN);
+    }
+
+    // Copy info
+    if (info_buf[0])
+    {
+        packet.info_len = strlen(info_buf);
+        memcpy(packet.info, info_buf, packet.info_len);
     }
 
     // Convert to TNC2

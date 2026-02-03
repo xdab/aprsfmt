@@ -1,0 +1,111 @@
+# APRSFMT Technical Documentation
+
+## Project Overview
+
+`aprsfmt` is a C-based command-line utility for constructing and formatting APRS (Automatic Packet Reporting System) packets. It provides CLI interfaces for generating AX.25 packets with position reports, flexible addressing, and customizable metadata.
+
+---
+
+## Directory Structure
+
+```
+aprsfmt/
+├── src/                  # Source implementation files
+│   ├── main.c           # Entry point, packet construction, argument handling
+│   ├── arguments.c      # CLI argument parsing implementation
+│   └── position_uncompressed.c  # APRS position report formatting
+├── test/                # Test files
+│   ├── main_test.c      # Test runner, registers all test suites
+│   ├── test_position.h  # Position formatting test cases
+│   └── test.h           # Custom test framework (assertions, setup)
+├── include/             # Header files (public interfaces)
+│   ├── arguments.h      # CLI argument struct and parser declaration
+│   └── position.h       # Position formatting function declarations
+├── libs/
+│   └── libtnc/          # AX.25/TNC2 protocol library (external dependency)
+├── build/               # Build artifacts (generated, not in git)
+├── CMakeLists.txt       # CMake configuration
+├── Makefile             # Convenience build targets
+├── README.md            # User-facing documentation
+└── LICENSE              # Project license
+```
+
+---
+
+## Build System
+
+### CMake & Make
+
+- **CMakeLists.txt**: Defines compilation targets, dependencies, and build rules
+- **Makefile**: Provides convenient targets for common operations
+- **Supported Targets**:
+  - `aprsfmt`: Main CLI application
+  - `aprsfmt_test`: Test binary (runs all unit tests)
+
+### Build Commands
+
+```bash
+make clean              # Remove build artifacts
+make update             # Pull latest changes + submodules
+make build              # Debug build
+make release            # Optimized release binary
+make                    # Default: build + run sample
+make run                # Run compiled binary
+make test               # Build and run all tests
+make install            # Release build + system install
+```
+
+---
+
+## Code Organization
+
+### Adding Features
+
+1. Create `include/feature.h` with struct and function declarations
+2. Implement in `src/feature.c` - return 0 on success, negative on error
+3. Add fields to `struct arguments` and options to `argp_option[]` (use numeric keys for long-only options, single char for short options)
+4. Handle parsing in `arguments.c` switch statement
+5. Integrate in `main.c` with error checking via `nonnegative(ret, "...")`
+6. Write tests in `test/test_feature.h`, register in `test/main_test.c`
+
+### Error Handling
+
+Functions return 0 on success, negative on error. Use `nonnegative(ret, "context")` in main.c.
+
+---
+
+## Testing
+
+Custom framework in `test/test.h`: `assert_equal_int()`, `assert_string()`, `assert_true()`, `begin_suite()`, `end_suite()`.
+
+Test one aspect per function. Cover valid/invalid/boundary cases, nulls, and combinations. Name tests clearly to reflect what they validate.
+
+Run with `make test` or `./build/aprsfmt_test`.
+
+---
+
+## Key Components
+
+**Arguments** (`src/arguments.c`, `include/arguments.h`): GNU argp for parsing. Option key is a single char ('s', 'd', etc.) for short options, numeric otherwise for long-only.
+
+**Position Formatting** (`src/position_uncompressed.c`): DD.DDD → APRS ddmm.hh format. Handles hemispheres, DTI generation, validation.
+
+**Main** (`src/main.c`): Parse args → init AX.25 packet → set addresses (libtnc) → generate position report if lat/lon provided → convert to TNC2 format → output.
+
+---
+
+## Adding a New Feature
+
+Add header with struct and function, implement in src with validation, extend arguments struct and options array (char key for short, numeric for long-only), handle in parse_opt switch, integrate in main.c, write tests.
+
+Example: adding wind speed would need `include/wind.h`, `src/wind.c`, updates to `arguments.h/c` (add double wind_speed, option key 1007 for long-only, case 1007 parsing), integration in main.c to format and append, tests covering valid/invalid/null cases.
+
+## Compilation
+
+Local headers: `#include "name.h"`. External: `#include <ax25.h>` (libtnc).
+
+Dependencies: libtnc (AX.25), standard libs (math, stdio, string, stdlib, stdbool, argp).
+
+Debug: `make build`. Release: `make release`. Targets: `aprsfmt` (binary), `aprsfmt_test` (tests).
+
+Build artifacts: `build/aprsfmt` (binary), `build/aprsfmt_test` (tests). Regenerate with `make` or `make test`.
