@@ -43,10 +43,12 @@ typedef struct
 
 typedef struct
 {
-    double lat;        /* Latitude in decimal degrees */
-    double lon;        /* Longitude in decimal degrees */
-    char symbol_table; /* APRS symbol table (e.g., '/', '\', etc.) */
-    char symbol;       /* APRS symbol (icon) */
+    double lat;             /* Latitude in decimal degrees */
+    double lon;             /* Longitude in decimal degrees */
+    char symbol_table;      /* APRS symbol table (e.g., '/', '\', etc.) */
+    char symbol;            /* APRS symbol (icon) */
+    bool messaging_capable; /* true if the station is messaging capable, false otherwise */
+    bool with_timestamp;    /* true if the position report is valid at a specific timestamp, false otherwise */
 
     /* Optional course/speed data */
     bool has_course_speed; /* true if cs bytes contain course/speed */

@@ -35,6 +35,10 @@ int main(void)
     test_compressed_format_nmea_sources();
     test_compressed_format_compression_origins();
     test_compressed_format_gps_fix_status();
+    test_compressed_format_dti_no_messaging_no_timestamp();
+    test_compressed_format_dti_messaging_no_timestamp();
+    test_compressed_format_dti_no_messaging_with_timestamp();
+    test_compressed_format_dti_messaging_with_timestamp();
     test_compressed_format_invalid_latitude();
     test_compressed_format_invalid_longitude();
     test_compressed_format_null_buffer();

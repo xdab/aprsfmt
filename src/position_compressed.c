@@ -202,6 +202,7 @@ int position_format_compressed(char *buffer, const position_compressed_t *pos)
     int t;
     int ret;
     size_t len;
+    char dti;
 
     if (buffer == NULL || pos == NULL)
     {
@@ -225,9 +226,16 @@ int position_format_compressed(char *buffer, const position_compressed_t *pos)
     t = build_t_byte(pos);
     char t_char = encode_base_91(t);
 
-    /* Build the compressed position string: <symbol_table><YYYY><XXXX><symbol><cs1><cs2><T> */
+    /* Build DTI (Data Type Indicator) character */
+    if (pos->with_timestamp)
+        dti = pos->messaging_capable ? DTI_MESSAGING_WITH_TIMESTAMP : DTI_NO_MESSAGING_WITH_TIMESTAMP;
+    else
+        dti = pos->messaging_capable ? DTI_MESSAGING_NO_TIMESTAMP : DTI_NO_MESSAGING_NO_TIMESTAMP;
+
+    /* Build the compressed position string: <DTI><symbol_table><YYYY><XXXX><symbol><cs1><cs2><T> */
     len = strlen(buffer);
 
+    buffer[len++] = dti;
     buffer[len++] = pos->symbol_table;
     memcpy(buffer + len, lat_buf, 4);
     len += 4;
